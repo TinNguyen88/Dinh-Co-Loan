@@ -124,6 +124,61 @@ td:first-child{text-align:center;font-weight:700;color:var(--sub);}
   .sum-full{grid-column:auto;}
   .btn{font-size:.82rem;padding:12px 14px;}
 }
+
+/* ── DISCLAIMER MODAL ── */
+#disclaimer-overlay{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(5,7,15,.75);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;padding:20px;
+  animation:fadeInBg .25s ease;
+}
+#disclaimer-overlay.open{display:flex;}
+@keyframes fadeInBg{from{opacity:0;}to{opacity:1;}}
+#disclaimer-modal{
+  background:var(--white);border-radius:20px;
+  max-width:520px;width:100%;max-height:85vh;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 24px 64px rgba(0,0,0,.35);
+  animation:slideUp .28s cubic-bezier(.4,0,.2,1);
+  border:1px solid var(--line);
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+#disclaimer-modal.closing{animation:slideDown .22s cubic-bezier(.4,0,.2,1) forwards;}
+@keyframes slideDown{to{opacity:0;transform:translateY(16px);}}
+.disc-header{
+  padding:20px 24px 16px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.disc-title{font-size:.95rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px;}
+.disc-close{
+  background:var(--bg);border:1px solid var(--line);border-radius:8px;
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.9rem;color:var(--sub);transition:all .15s;
+}
+.disc-close:hover{background:var(--line);color:var(--ink);}
+.disc-body{padding:20px 24px;overflow-y:auto;flex:1;}
+.disc-body p{
+  font-size:.83rem;color:var(--sub);line-height:1.75;
+  margin-bottom:12px;padding-bottom:12px;
+  border-bottom:1px solid var(--line);
+}
+.disc-body p:last-of-type{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.disc-footer{
+  margin-top:20px;padding:16px;
+  background:var(--bg);border-radius:12px;
+  text-align:center;border:1px solid var(--line);
+}
+.disc-footer .df-brand{font-size:.85rem;font-weight:800;color:var(--navy);letter-spacing:.5px;margin-bottom:2px;}
+.disc-footer .df-sub{font-size:.73rem;color:var(--muted);margin-bottom:2px;}
+.disc-footer .df-copy{font-size:.7rem;color:var(--muted);}
+.disc-btn-row{padding:16px 24px;border-top:1px solid var(--line);flex-shrink:0;}
+.disc-btn-close{
+  width:100%;padding:11px;border-radius:var(--radius-sm);border:none;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  color:#fff;font-size:.88rem;font-weight:700;cursor:pointer;
+  font-family:inherit;letter-spacing:.3px;
+}
+.disc-btn-close:hover{opacity:.92;}
 </style>
 </head>
 <body>
@@ -278,6 +333,11 @@ td:first-child{text-align:center;font-weight:700;color:var(--sub);}
   </div><!-- /results -->
 
   <div class="by-line">ĐỊNH CƠ · Loan Calculator · By Nguyễn Trung Tín</div>
+
+  <!-- NÚT ĐIỀU KHOẢN -->
+  <div style="text-align:center;margin-top:10px;margin-bottom:8px;">
+    <button onclick="openDisclaimer()" style="background:none;border:none;color:var(--muted);font-size:.72rem;cursor:pointer;font-family:inherit;letter-spacing:.5px;text-decoration:underline;padding:4px 8px;transition:color .2s;">📄 Điều khoản &amp; Miễn trừ trách nhiệm</button>
+  </div>
 
 </div><!-- /container -->
 
@@ -561,6 +621,65 @@ function resetForm(){
 // ── Enter key shortcut ──
 document.addEventListener('keydown', function(e){
   if(e.key === 'Enter') calculate();
+});
+</script>
+
+<!-- DISCLAIMER MODAL -->
+<div id="disclaimer-overlay" onclick="handleOverlayClick(event)">
+  <div id="disclaimer-modal" role="dialog" aria-modal="true" aria-labelledby="disc-title-text">
+    <div class="disc-header">
+      <div class="disc-title">
+        <span>📄</span>
+        <span id="disc-title-text">Điều khoản &amp; Miễn trừ trách nhiệm</span>
+      </div>
+      <button class="disc-close" onclick="closeDisclaimer()" aria-label="Đóng">✕</button>
+    </div>
+    <div class="disc-body">
+      <p>Ứng dụng này được phát triển nhằm hỗ trợ người dùng tham khảo và ước tính phương án vay vốn dựa trên các thông tin được nhập vào.</p>
+      <p>Các kết quả tính toán chỉ mang tính chất tham khảo và không phải là báo giá, cam kết cấp tín dụng hoặc tư vấn tài chính chính thức.</p>
+      <p>Lãi suất, phương pháp tính, phí, bảo hiểm, điều kiện vay và các chính sách tín dụng có thể khác nhau giữa các ngân hàng và thay đổi theo từng thời điểm.</p>
+      <p>Người dùng nên liên hệ trực tiếp với ngân hàng hoặc tổ chức tín dụng để nhận bảng tính và điều kiện vay chính thức trước khi đưa ra quyết định tài chính.</p>
+      <p>Tác giả không chịu trách nhiệm đối với bất kỳ tổn thất, thiệt hại hoặc quyết định tài chính nào phát sinh từ việc sử dụng kết quả của ứng dụng.</p>
+      <div class="disc-footer">
+        <div class="df-brand">ĐỊNH CƠ – Loan Calculator</div>
+        <div class="df-sub">AI Finance Coach</div>
+        <div class="df-sub">Phiên bản hoàn thiện của Trung Tín Fin Coach</div>
+        <div class="df-sub">By Nguyễn Trung Tín</div>
+        <div class="df-copy">© 2026</div>
+      </div>
+    </div>
+    <div class="disc-btn-row">
+      <button class="disc-btn-close" onclick="closeDisclaimer()">Đã hiểu — Đóng</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DISCLAIMER MODAL ──
+function openDisclaimer(){
+  var el = document.getElementById('disclaimer-overlay');
+  var modal = document.getElementById('disclaimer-modal');
+  modal.classList.remove('closing');
+  el.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDisclaimer(){
+  var modal = document.getElementById('disclaimer-modal');
+  var el    = document.getElementById('disclaimer-overlay');
+  modal.classList.add('closing');
+  setTimeout(function(){
+    el.classList.remove('open');
+    modal.classList.remove('closing');
+    document.body.style.overflow = '';
+  }, 220);
+}
+function handleOverlayClick(e){
+  if(e.target === document.getElementById('disclaimer-overlay')) closeDisclaimer();
+}
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && document.getElementById('disclaimer-overlay').classList.contains('open')){
+    closeDisclaimer();
+  }
 });
 </script>
 </body>
